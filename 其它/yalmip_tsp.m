@@ -25,7 +25,7 @@ for i = 2:n
     end
 end
 % 参数设置
-ops = sdpsettings('verbose',0,'solve','gurobi');
+ops = sdpsettings('verbose',0,'solve','lpsolve');
 % 求解
 result  = optimize(C,z);
 if result.problem== 0
