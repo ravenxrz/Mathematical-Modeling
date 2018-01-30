@@ -7,7 +7,7 @@
 clear;close;clc;
 tic
 % step1 设置遗传算法的一些参数
-ops = gaoptimset('Generations',10000,'StallGenLimit',300 );
+ops = gaoptimset('Generations',1000,'StallGenLimit',300,'PlotFcns',@gaplotbestf);
 % setp2 进行计算
 % final_pop可用于下一次开始的初始化种群，避免多次重复计算
 % final_pop 可用于下次迭代，使用在gaoptimset,'InitialPopulation'参数,具体可见p91

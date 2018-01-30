@@ -32,7 +32,7 @@ for i = 2:n
     end
 end
 % 参数设置
-ops = sdpsettings('debug','0','solver','lindo');
+ops = sdpsettings('debug','1','solver','gurobi');
 % 求解
 result  = optimize(C,z,ops);
 if result.problem== 0
