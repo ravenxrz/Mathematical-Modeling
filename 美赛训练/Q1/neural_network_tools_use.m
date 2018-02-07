@@ -57,8 +57,8 @@ a = mapminmax('reverse',an,output_str);
 
 % 输出
 subplot(211);
-plot(target(1:useLength));hold on;plot(a);title('实际样本和仿真样本');
-legend('实际','仿真');
+plot(target(1:useLength));hold on;plot(a);title('Actual sample and simulation sample');
+legend('Actual','simulation');
 
 % 测试数据
 % index = randperm(useLength,50);
@@ -76,7 +76,7 @@ ttd = mapminmax('reverse',tts,output_str);
 subplot(212);
 subplot(212);
 plot(testGroup);hold on;
-plot(ttd);title('实际样本和仿真样本');
-legend('实际','仿真');
+plot(ttd);title('Actual sample and simulation sample');
+legend('Actual','simulation');
 
 mean(abs(ttd-testGroup)./testGroup)

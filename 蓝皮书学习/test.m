@@ -1,9 +1,9 @@
-D = load('dist2.txt');
-[row,col] = size(D);
-for i = 1:row
-    for j = 1:col
-        if(D(i,j) == 0 && i~= j)
-            D(i,j) = inf;
-        end
-    end
-end
+% 清除环境变量
+clear;clc;close;
+x = sdpvar(1,1);
+C = [
+    1<=x<=2
+];
+z = x;
+ops = sdpsettings('verbose',0,'solver','gurobi');
+result = optimize(C,z,ops);
