@@ -1,3 +1,4 @@
+% 计算数据得分，也可计算指标权重，提取最大的特征值所对应的特征向量。
 function data = PCA(raw_data,T)
 % raw_data 原始数据
 % T 保留率
