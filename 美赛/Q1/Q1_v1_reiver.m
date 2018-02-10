@@ -4,7 +4,7 @@
 % 初始化
 clear;clc;close all;
 Pin = 100;      % 输入功率
-S_N = 10;       % 信噪比
+L_Pin = 10*log10(Pin);
 
 N = [               % 各层电子密度
     2.5*10^9        % D层
@@ -18,13 +18,14 @@ c = 3*10^8;
 e = 1.60217662 * 10^(-19);  % 电量
 hup = 150*10^3;
 hdown = 60*10^3;
-h = hup - hdown;       % 高度差
+deltah = hup - hdown;       % 高度差
 hmax = 200*10^3; % 最高高度
 Nmax = 8*10^11; % 最大电子密度
 R = 6371*10^3;      % 地球半径
 m = 9.106*10^(-31);
+Lg = 15.4;        % 12点
 
-N1= 0;
+N1= 35;
 N2 = -2;
 
 k = 1;
@@ -34,24 +35,17 @@ for i = 5:2:60
     f = 0.85*fmax;    % 工作频率
     lamda = c /f;   % 波长
     w = 2*pi*f;     % 工作角频率
-    N0 = 10*log10(1.38*10^-23*290*f);       %噪声
-    noise = N0+N1+N2;
+    Fa = 10*log10(1.38*10^(-23)*290*f);       %噪声
+    noise = Fa+N1+N2;
     
-    %% 损耗计算
-    L0 =   32.45+ 20*log10(f/10^6)+ 20*log10(2*hup/10^3/sin(delta))   ; % 自由空间传播公式，r为km
-    l = h/sin(delta);
+    %% 损耗计算  
+    l = deltah/sin(delta);
     a1 = (60*pi*N(1)*e^2*v(1))/(m*(w^2 + v(1)^2));        % D层吸收损耗
     La1 = exp(-a1*l)*2;
     a2 = (60*pi*N(2)*e^2*v(2))/(m*(w^2 + v(2)^2));        % E层吸收损耗
     La2 = exp(-a2*l)*2;
     La = La1+La2;
-    LgT = [
-        18      %22-04
-        16.6    %04-10
-        15.4    %10-16
-        16.6    %16-22
-        ];
-    Lg = LgT(3);        % 12点
+
     
     %% 海洋平面衰减
     % 初始化
@@ -71,14 +65,13 @@ for i = 5:2:60
     g = 0.5*(4*pi*h*f*sin(delta)/c)^2;
     p = 1/sqrt(3.2*g-2+sqrt((3.2*g)^2-7*g+9));
     R2 = p*R1;
-    Lg_dynamic = abs(10*log10(R2/2));
-    L_Pin = 10*log10(Pin);
+    Lg_dynamic =abs(10*log10(R2/2));
     
     % 统计单跳
-    x_static(k)=  L_Pin  - Lg_static -La -  20*log10(2*hup/10^3/sin(delta));        % 单跳
-    x_dynmic(k) =  L_Pin - Lg_dynamic -La -  20*log10(2*hup/10^3/sin(delta));
+    x_static(k)=  L_Pin  - Lg_static -La -  20*log10(150*cos(delta)/sin(delta)*2);        % 单跳
+    x_dynmic(k) =  L_Pin - Lg_dynamic -La -  20*log10(150*cos(delta)/sin(delta)*2);
     
-    total = L_Pin-15.4-32.45-20*log10(f/10^6) -noise
+    total = L_Pin-15.4-32.45-20*log10(f/10^6) -noise + 10;
     n = intvar(1,1);
     C = [
         n*(La+Lg_static)+20*log10(150*cos(delta)/sin(delta)*2*n)<=total;
@@ -91,5 +84,5 @@ end
 figure;
 plot(5:2:60,x_static,5:2:60,x_dynmic);legend('静态','动态');
 figure;
-plot(5:2:60,X);
+scatter(5:2:60,X);
 % mean(D)
