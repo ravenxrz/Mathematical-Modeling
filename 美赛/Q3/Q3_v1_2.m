@@ -1,3 +1,4 @@
+%% 第三问-静区分析
 % 问题一-计算通过海平面反射最多有几跳
 % 假设：数据统计均在白天,各层的电子密度均为常数
 %% 电离层衰减
@@ -27,12 +28,10 @@ Lg = 15.4;        % 12点的额外损耗
 
 N1= 35;
 N2 = -2;
-
+between = 5:2:60;
 k = 1;
-between = 10:10:60;
 for i = between
     delta = deg2rad(i);    % 仰角
-
     fmax = sqrt((80.8*Nmax*(1+2*hmax/R))/(sin(delta)^2+2*hmax/R));      % 最大频率估算公式
     f = 0.85*fmax;    % 工作频率
     lamda = c /f;   % 波长
@@ -47,7 +46,8 @@ for i = between
     a2 = (60*pi*N(2)*e^2*v(2))/(m*(w^2 + v(2)^2));        % E层吸收损耗
     La2 = exp(-a2*l)*2;
     La = La1+La2;
-
+    
+    plot(i,La,'bo');hold on;
     
     %% 海洋平面衰减
     % 初始化
@@ -60,50 +60,19 @@ for i = between
     RV = (ee*sin(delta) - sqrt(ee - cos(delta)^2))/(ee*sin(delta)+sqrt(ee - cos(delta)^2));
     R1 = (abs(RV)^2 + abs(RH)^2);
     Lg_static = abs(10*log10(R1/2));
-    
-    % 动态-加入修正因子
-    wind = 10;      % 风速
-    h = 0.0051*wind^2;  % 海浪均方根高度
-    g = 0.5*(4*pi*h*f*sin(delta)/c)^2;
-    p = 1/sqrt(3.2*g-2+sqrt((3.2*g)^2-7*g+9));
-    R2 = p*R1;
-    Lg_dynamic =abs(10*log10(R2/2));
-    
+   
     % 统计单跳
-    total = L_Pin-15.4-32.45-20*log10(f/10^6) -noise + 10;
-    n1 = intvar(1,1);
-    C = [
-        n1*(La+Lg_static)+20*log10(150*cos(delta)/sin(delta)*2*n1)<=total;
-        ];
-    z = -n1;
-    result = optimize(C,z);
-    X1(k) = value(n1);
-    
-    n2 = intvar(1,1);
-    C = [
-        n2*(La+Lg_dynamic)+20*log10(150*cos(delta)/sin(delta)*2*n2)<=total;
-        ];
-    z = -n2;
-    result = optimize(C,z);
-    X2(k) = value(n2);
-    
-    if X1(k) == 0
-           x_static(k)= NaN;        % 单跳
-    else
-        x_static(k)=  Lg_static +La +  20*log10(150*cos(delta)/sin(delta)*2)+(20*log(f/10^6)+32.45)/X1(k);        % 单跳
-      
-    end
-    
-    if X2(k) == 0
-         x_dynmic(k) = NaN;
-    else
-        x_dynmic(k) = Lg_dynamic +La +  20*log10(150*cos(delta)/sin(delta)*2)+(20*log(f/10^6)+32.45)/X2(k);
-    end
-    
-    
+    x_static(k)=  L_Pin  - Lg_static -La ;        % 单跳
+%     
+%     total = L_Pin-15.4-32.45-20*log10(f/10^6) -noise + 10;
+%     n = intvar(1,1);
+%     C = [
+%         n*(La+Lg_static)+20*log10(150*cos(delta)/sin(delta)*2*n)<=total;
+%         ];
+%     z = -n;
+%     result = optimize(C,z);
+%     X(k) = value(n);
     k = k+1;
 end
-figure;
-plot(between,x_static,between,x_dynmic);legend('静态','动态');
-figure;
-plot(between,X1,between,X2);
+
+% scatter(between,X);
