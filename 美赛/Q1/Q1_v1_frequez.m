@@ -1,5 +1,6 @@
 % 问题一-计算通过海平面反射最多有几跳
 % 假设：数据统计均在白天,各层的电子密度均为常数
+% 灵敏性分析-工作频率分析
 %% 电离层衰减
 % 初始化
 clear;clc;close all;
@@ -17,6 +18,7 @@ v = [
 c = 3*10^8;
 e = 1.60217662 * 10^(-19);  % 电量
 hup = 150*10^3;
+delta = deg2rad(50);    % 仰角
 hdown = 60*10^3;
 deltah = hup - hdown;       % 高度差
 hmax = 200*10^3; % 最高高度
@@ -29,12 +31,13 @@ N1= 35;
 N2 = -2;
 
 k = 1;
-between = 30:1:60;
-for i = between
-    delta = deg2rad(i);    % 仰角
+P = 0.1:0.05:0.85;
+fmax = sqrt((80.8*Nmax*(1+2*hmax/R))/(sin(delta)^2+2*hmax/R));      % 最大频率估算公式
+% between = 10:10:60;
+for i = 1:length(P)
 
-    fmax = sqrt((80.8*Nmax*(1+2*hmax/R))/(sin(delta)^2+2*hmax/R));      % 最大频率估算公式
-    f = 0.85*fmax;    % 工作频率
+    
+    f = P(i)*fmax;    % 工作频率
     lamda = c /f;   % 波长
     w = 2*pi*f;     % 工作角频率
     Fa = 10*log10(1.38*10^(-23)*290*f);       %噪声
@@ -46,13 +49,13 @@ for i = between
     La1 = exp(-a1*l)*2;
     a2 = (60*pi*N(2)*e^2*v(2))/(m*(w^2 + v(2)^2));        % E层吸收损耗
     La2 = exp(-a2*l)*2;
-    La = La1+La2;
+    La = La1+La2
 
     
-    %% 光滑地面平面衰减
+    %% 海洋平面衰减
     % 初始化
-    er = 4;            % 相对介电常数
-    o = 10^(-3);            % 海水电导率
+    er = 70;            % 相对介电常数
+    o = 5;            % 海水电导率
     ee = er+60*lamda*o*i;     % 海面复介电常数
     
     % 静态
@@ -61,20 +64,26 @@ for i = between
     R1 = (abs(RV)^2 + abs(RH)^2);
     Lg_static = abs(10*log10(R1/2));
     
-
+    % 动态-加入修正因子
+    wind = 10;      % 风速
+    h = 0.0051*wind^2;  % 海浪均方根高度
+    g = 0.5*(4*pi*h*f*sin(delta)/c)^2;
+    p = 1/sqrt(3.2*g-2+sqrt((3.2*g)^2-7*g+9));
+    R2 = p*R1;
+    Lg_dynamic =abs(10*log10(R2/2));
     
     % 统计单跳
     total = L_Pin-15.4-32.45-20*log10(f/10^6) -noise + 10;
     n1 = intvar(1,1);
     C = [
-        n1*(La+Lg_static)+20*log10(150*cos(delta)/sin(delta)*2*n1)<=total;
+        n1*(La+Lg_static)+20*log10(hup/10^3*cos(delta)/sin(delta)*2*n1)<=total;
         ];
     z = -n1;
     result = optimize(C,z);
     X1(k) = value(n1);
     
 
-    
+ 
     if X1(k) == 0
            x_static(k)= NaN;        % 单跳
     else
@@ -83,7 +92,10 @@ for i = between
     end
     
     
+    
     k = k+1;
 end
-figure;
-plot(between,X1);xlabel('Antenna elevation angle');ylabel('Hup');
+% figure;
+% plot(between,x_static,between,x_dynmic);legend('静态','动态');
+% figure;
+plot(P,X1);

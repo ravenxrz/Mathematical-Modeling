@@ -29,7 +29,7 @@ N1= 35;
 N2 = -2;
 
 k = 1;
-between = 30:1:60;
+between = 60:-1:20;
 for i = between
     delta = deg2rad(i);    % 仰角
 
@@ -49,10 +49,10 @@ for i = between
     La = La1+La2;
 
     
-    %% 光滑地面平面衰减
+    %% 海洋平面衰减
     % 初始化
-    er = 4;            % 相对介电常数
-    o = 10^(-3);            % 海水电导率
+    er = 70;            % 相对介电常数
+    o = 5;            % 海水电导率
     ee = er+60*lamda*o*i;     % 海面复介电常数
     
     % 静态
@@ -61,7 +61,13 @@ for i = between
     R1 = (abs(RV)^2 + abs(RH)^2);
     Lg_static = abs(10*log10(R1/2));
     
-
+    % 动态-加入修正因子
+    wind = 10;      % 风速
+    h = 0.0051*wind^2;  % 海浪均方根高度
+    g = 0.5*(4*pi*h*f*sin(delta)/c)^2;
+    p = 1/sqrt(3.2*g-2+sqrt((3.2*g)^2-7*g+9));
+    R2 = p*R1;
+    Lg_dynamic =abs(10*log10(R2/2));
     
     % 统计单跳
     total = L_Pin-15.4-32.45-20*log10(f/10^6) -noise + 10;
@@ -73,8 +79,6 @@ for i = between
     result = optimize(C,z);
     X1(k) = value(n1);
     
-
-    
     if X1(k) == 0
            x_static(k)= NaN;        % 单跳
     else
@@ -82,8 +86,12 @@ for i = between
       
     end
     
+
+    
     
     k = k+1;
 end
+% figure;
+% plot(between,x_static,between,x_dynmic);legend('静态','动态');
 figure;
 plot(between,X1);xlabel('Antenna elevation angle');ylabel('Hup');

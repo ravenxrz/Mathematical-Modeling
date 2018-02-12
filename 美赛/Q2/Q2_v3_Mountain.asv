@@ -1,8 +1,5 @@
 % 问题二2.1-自建模型
 clc;close;clear;
-
-theta = 10:1:40;
-for i = 1:length(theta)
 %% 初始化
 Pi = 20;      % 输入功率
 Po = -127;   % 输出功率
@@ -68,12 +65,10 @@ ee = er+60*lamda*o*i;     % 海面复介电常数
         if temp <= Po
             disp('跳跃');
             disp(k)
-            record(i) = k;
-       
             break;
         end
         k = k +1;
     end
 end
 
-plot(theta,k);
+

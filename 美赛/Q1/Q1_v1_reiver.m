@@ -29,7 +29,7 @@ N1= 35;
 N2 = -2;
 
 k = 1;
-between = 10:10:60;
+between = 30:1:60;
 for i = between
     delta = deg2rad(i);    % Ñö½Ç
 
@@ -106,4 +106,4 @@ end
 figure;
 plot(between,x_static,between,x_dynmic);legend('¾²Ì¬','¶¯Ì¬');
 figure;
-plot(between,X1,between,X2);
+plot(between,X1);xlabel('Antenna elevation angle');ylabel('Hup');

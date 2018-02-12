@@ -3,9 +3,9 @@ clear;clc;close all;
 
 syms thetaf thetaa;
 i = 1;
-wxd = 0.1;
+wxd = 0.;
 wyd = 0.9;
-wzd = 0.5;
+wzd = 0.3;
 % for wxd = 1:10
 %     for wyd = 1:10
 %         for wzd = 1:10

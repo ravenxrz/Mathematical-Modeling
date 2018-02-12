@@ -29,7 +29,7 @@ N1= 35;
 N2 = -2;
 
 k = 1;
-between = 10:10:60;
+between = 30:1:60;
 for i = between
     delta = deg2rad(i);    % Ñö½Ç
 
@@ -73,7 +73,7 @@ for i = between
     total = L_Pin-15.4-32.45-20*log10(f/10^6) -noise + 10;
     n1 = intvar(1,1);
     C = [
-        n1*(La+Lg_static)+20*log10(150*cos(delta)/sin(delta)*2*n)<=total;
+        n1*(La+Lg_static)+20*log10(150*cos(delta)/sin(delta)*2*n1)<=total;
         ];
     z = -n1;
     result = optimize(C,z);
@@ -81,23 +81,23 @@ for i = between
     
     n2 = intvar(1,1);
     C = [
-        n2*(La+Lg_dynamic)+20*log10(150*cos(delta)/sin(delta)*2*n)<=total;
+        n2*(La+Lg_dynamic)+20*log10(150*cos(delta)/sin(delta)*2*n2)<=total;
         ];
     z = -n2;
     result = optimize(C,z);
     X2(k) = value(n2);
     
     if X1(k) == 0
-           x_static(k)=  Lg_static +La +  20*log10(150*cos(delta)/sin(delta)*2)+(20*log(f/10^6)+32.45);        % µ¥Ìø
+           x_static(k)= NaN;        % µ¥Ìø
     else
-        x_static(k)=  Lg_static +La +  20*log10(150*cos(delta)/sin(delta)*2)+(20*log(f/10^6)+32.45)/X(k);        % µ¥Ìø
+        x_static(k)=  Lg_static +La +  20*log10(150*cos(delta)/sin(delta)*2)+(20*log(f/10^6)+32.45)/X1(k);        % µ¥Ìø
       
     end
     
     if X2(k) == 0
-         x_dynmic(k) = Lg_dynamic +La +  20*log10(150*cos(delta)/sin(delta)*2)+(20*log(f/10^6)+32.45);
+         x_dynmic(k) = NaN;
     else
-        x_dynmic(k) = Lg_dynamic +La +  20*log10(150*cos(delta)/sin(delta)*2)+(20*log(f/10^6)+32.45)/X(k);
+        x_dynmic(k) = Lg_dynamic +La +  20*log10(150*cos(delta)/sin(delta)*2)+(20*log(f/10^6)+32.45)/X2(k);
     end
     
     
@@ -106,4 +106,4 @@ end
 figure;
 plot(between,x_static,between,x_dynmic);legend('¾²Ì¬','¶¯Ì¬');
 figure;
-plot(between,X);
+plot(between,X1);xlabel(''
