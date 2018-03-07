@@ -86,4 +86,4 @@ for i = between
     k = k+1;
 end
 figure;
-plot(between,X1);xlabel('Antenna elevation angle');ylabel('Hup');
+plot(between,X1);xlabel('Antenna elevation angle');ylabel('Hop');

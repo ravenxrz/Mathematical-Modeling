@@ -96,4 +96,4 @@ end
 % figure;
 % plot(between,x_static,between,x_dynmic);legend('¾²Ì¬','¶¯Ì¬');
 % figure;
-plot(Hup,X1);xlabel('Ionosphere height');ylabel('Hup');
+plot(Hup,X1);xlabel('Ionosphere height');ylabel('Hop');

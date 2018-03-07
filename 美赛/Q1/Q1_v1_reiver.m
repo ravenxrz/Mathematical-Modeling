@@ -106,4 +106,4 @@ end
 figure;
 plot(between,x_static,between,x_dynmic);legend('¾²Ì¬','¶¯Ì¬');
 figure;
-plot(between,X1);xlabel('Antenna elevation angle');ylabel('Hup');
+plot(between,X1);xlabel('Antenna elevation angle');ylabel('Hop');
