@@ -28,4 +28,4 @@
 
 Ok,that's all,hope you have a good day!
 
-写了一份[建模心得](https://www.ravenxrz.ink/2019/05/03/a-experience-of-failure-in-mathematical-modeling.html)，希望能够帮助到后来的建模学弟学妹吧。
+写了一份[建模心得](https://www.ravenxrz.ink/a-experience-of-failure-in-mathematical-modeling.html)，希望能够帮助到后来的建模学弟学妹吧。
